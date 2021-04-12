@@ -118,3 +118,47 @@ data "aws_iam_policy_document" "restrict_regions" {
     }
   }
 }
+
+data "aws_iam_policy_document" "config_recorder" {
+  statement {
+    sid    = "DenyUnsecuredTransport"
+    effect = "Allow"
+
+    actions = [
+      "s3:*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [
+        "true",
+      ]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = [aws_iam_service_linked_role.config_recorder.aws_service_name]
+    }
+
+    resources = [
+      aws_s3_bucket.config_recorder.arn,
+      "${aws_s3_bucket.config_recorder.arn}/*",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "org_config_assume_role" {
+  statement {
+    sid    = "OrgConfigAssume"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = [aws_iam_service_linked_role.config_recorder.aws_service_name]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
