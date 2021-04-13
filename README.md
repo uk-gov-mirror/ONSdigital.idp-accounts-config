@@ -77,6 +77,16 @@ resource "aws_route53_record" "idp_documentation" {
 }
 ```
 
+5. Add the SAN/zone-name to the organisation certificate in [organisation.tf](./organisation.tf)
+
+```terraform
+  subject_alternative_names = [
+    module.idp_mgmt.zone_name,
+    module.idp_mgmt_dev.zone_name,
+    module.idp_documentation.zone_name
+  ]
+```
+
 ## Outputs
 
 | Name | Description |

@@ -40,3 +40,42 @@ resource "aws_securityhub_organization_admin_account" "aws_d" {
 
   admin_account_id = aws_organizations_organization.aws_d.master_account_id
 }
+
+resource "aws_acm_certificate" "org_cert" {
+  domain_name       = aws_route53_zone.org_zone.name
+  validation_method = "DNS"
+
+  subject_alternative_names = [
+    module.idp_mgmt.zone_name,
+    module.idp_mgmt_dev.zone_name
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_record" "org_cert_validation_sans" {
+  for_each = {
+    for domain_validation in aws_acm_certificate.org_cert.domain_validation_options : domain_validation.domain_name => {
+      name    = domain_validation.resource_record_name
+      records = domain_validation.resource_record_value
+      type    = domain_validation.resource_record_type
+    }
+  }
+
+  name    = each.value.name
+  type    = each.value.type
+  zone_id = aws_route53_zone.org_zone.zone_id
+  ttl     = 60
+
+  records = [each.value.records]
+}
+
+resource "aws_acm_certificate_validation" "org_cert_validation" {
+  certificate_arn = aws_acm_certificate.org_cert.arn
+
+  validation_record_fqdns = [
+    for validation_record in aws_route53_record.org_cert_validation_sans : validation_record.fqdn
+  ]
+}

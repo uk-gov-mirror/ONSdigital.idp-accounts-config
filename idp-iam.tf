@@ -9,7 +9,7 @@ provider "aws" {
 
 module "iam" {
   source  = "ONSdigital/account/aws"
-  version = "~> 0.2.2"
+  version = "~> 0.2.3"
 
   account_env        = "iam"
   account_team       = "cia"
