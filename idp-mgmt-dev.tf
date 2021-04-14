@@ -9,7 +9,7 @@ provider "aws" {
 
 module "idp_mgmt_dev" {
   source  = "ONSdigital/account/aws"
-  version = "~> 0.2.2"
+  version = "~> 0.2.3"
 
   account_env        = "dev"
   account_team       = "cia"
