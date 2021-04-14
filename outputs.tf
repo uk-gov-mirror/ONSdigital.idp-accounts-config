@@ -32,3 +32,8 @@ output "org_zone_name_servers" {
   value       = aws_route53_zone.org_zone.name_servers
   description = "The name server records from the organisation route53 zone"
 }
+
+output "idp_iam_account_id" {
+  value       = module.iam.account_id
+  description = "The Id of the AWS account where you'll manage users"
+}
