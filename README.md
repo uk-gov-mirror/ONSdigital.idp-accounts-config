@@ -91,6 +91,7 @@ resource "aws_route53_record" "idp_documentation" {
 
 | Name | Description |
 |------|-------------|
+| idp\_iam\_account\_id | The Id of the AWS account where you'll manage users |
 | org\_member\_account\_ids | A list of organisation member accounts |
 | org\_root\_account\_arn | The AWS account arn of the organisation root account |
 | org\_root\_account\_email | The AWS account email of the organisation root account |
